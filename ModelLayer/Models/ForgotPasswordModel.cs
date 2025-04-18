@@ -8,7 +8,7 @@ namespace ModelLayer.Models
     public class ForgotPasswordModel
     {
         [Required(ErrorMessage = "User ID is required")]
-        public int UserId { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Enter a valid email address")]
