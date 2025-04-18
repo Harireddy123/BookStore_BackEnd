@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace BookStore.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace BookStore.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("Register")]
+        [HttpPost]
         public IActionResult Register(RegisterModel model)
         {
             try
@@ -81,7 +81,7 @@ namespace BookStore.Controllers
             }
         }
 
-        [HttpGet("ForgotPassword")]
+        [HttpGet("forgotPassword")]
         public IActionResult ForgetPassword(string email)
         {
             try

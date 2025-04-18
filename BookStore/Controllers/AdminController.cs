@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BookStore.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/admin")]
     [ApiController]
     public class AdminController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace BookStore.Controllers
             _adminManager = adminManager;
         }
 
-        [HttpPost("Register")]
+        [HttpPost]
         public IActionResult Register(AdminRegisterModel model)
         {
             try
@@ -80,7 +80,7 @@ namespace BookStore.Controllers
             }
         }
 
-        [HttpGet("ForgotPassword")]
+        [HttpGet("forgotpassword")]
         public IActionResult ForgetPassword(string email)
         {
             try
