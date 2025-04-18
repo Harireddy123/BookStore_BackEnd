@@ -1,0 +1,15 @@
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\bin\Debug\netcoreapp3.1\BussinessLayer.deps.json
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\bin\Debug\netcoreapp3.1\BussinessLayer.dll
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\bin\Debug\netcoreapp3.1\BussinessLayer.pdb
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\bin\Debug\netcoreapp3.1\ModelLayer.dll
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.dll
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.pdb
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\bin\Debug\netcoreapp3.1\ModelLayer.pdb
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.csproj.AssemblyReference.cache
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.AssemblyInfoInputs.cache
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.AssemblyInfo.cs
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.csproj.CoreCompileInputs.cache
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\Bussines.E1038C4E.Up2Date
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.dll
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.pdb

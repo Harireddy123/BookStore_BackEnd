@@ -1,0 +1,16 @@
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.deps.json
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.runtimeconfig.json
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.runtimeconfig.dev.json
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.dll
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\bin\Debug\netcoreapp3.1\RepositoryLayer.pdb
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\bin\Debug\netcoreapp3.1\ModelLayer.dll
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\bin\Debug\netcoreapp3.1\ModelLayer.pdb
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.csproj.AssemblyReference.cache
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.AssemblyInfoInputs.cache
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.AssemblyInfo.cs
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.csproj.CoreCompileInputs.cache
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\Reposito.A0A61804.Up2Date
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.dll
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.pdb
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.genruntimeconfig.cache
