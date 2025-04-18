@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "rRZ0tE+EAb4=",
+  "dgSpecHash": "hGZIXoPxpXo=",
   "success": true,
   "projectFilePath": "C:\\Users\\acer\\Desktop\\BasicPrograms\\BookStore\\BookStore\\BookStore.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\acer\\.nuget\\packages\\azure.core\\1.6.0\\azure.core.1.6.0.nupkg.sha512",
     "C:\\Users\\acer\\.nuget\\packages\\azure.identity\\1.3.0\\azure.identity.1.3.0.nupkg.sha512",
+    "C:\\Users\\acer\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.20\\microsoft.aspnetcore.authentication.jwtbearer.3.1.20.nupkg.sha512",
     "C:\\Users\\acer\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\acer\\.nuget\\packages\\microsoft.bcl.hashcode\\1.1.1\\microsoft.bcl.hashcode.1.1.1.nupkg.sha512",
     "C:\\Users\\acer\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",

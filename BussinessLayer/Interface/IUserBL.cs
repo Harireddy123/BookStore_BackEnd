@@ -13,5 +13,7 @@ namespace BussinessLayer.Interface
         public string Login(LoginModel model);
 
         public bool EmailExists(string email);
+        ForgotPasswordModel ForgetPassword(string email);
+        public bool ResetPassword(string email, ResetPasswordModel model);
     }
 }

@@ -14,3 +14,4 @@ C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcorea
 C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.dll
 C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.pdb
 C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.genruntimeconfig.cache
+C:\Users\acer\Desktop\BasicPrograms\BookStore\RepositoryLayer\obj\Debug\netcoreapp3.1\RepositoryLayer.sourcelink.json

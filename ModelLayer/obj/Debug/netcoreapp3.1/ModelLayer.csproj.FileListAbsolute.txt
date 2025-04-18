@@ -7,3 +7,4 @@ C:\Users\acer\Desktop\BasicPrograms\BookStore\ModelLayer\obj\Debug\netcoreapp3.1
 C:\Users\acer\Desktop\BasicPrograms\BookStore\ModelLayer\obj\Debug\netcoreapp3.1\ModelLayer.csproj.CoreCompileInputs.cache
 C:\Users\acer\Desktop\BasicPrograms\BookStore\ModelLayer\obj\Debug\netcoreapp3.1\ModelLayer.dll
 C:\Users\acer\Desktop\BasicPrograms\BookStore\ModelLayer\obj\Debug\netcoreapp3.1\ModelLayer.pdb
+C:\Users\acer\Desktop\BasicPrograms\BookStore\ModelLayer\obj\Debug\netcoreapp3.1\ModelLayer.sourcelink.json

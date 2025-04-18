@@ -95,5 +95,60 @@ namespace RepositoryLayer.Service
             }
         }
 
+        public ForgotPasswordModel ForgetPassword(string email)
+        {
+            try
+            {
+                var user = GetUserByEmail(email);
+                if (user == null)
+                    throw new Exception("User does not exist for the requested email");
+
+                return new ForgotPasswordModel
+                {
+                    UserId = user.Id,
+                    Email = user.Email,
+                    Token = GenerateToken(user.Email, user.Id, user.Role)
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error processing forgot password request", ex);
+            }
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            try
+            {
+                return _dbContext.Users.FirstOrDefault(user => user.Email == email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving user by email", ex);
+            }
+        }
+
+        public bool ResetPassword(string email, ResetPasswordModel resetPasswordModel)
+        {
+            try
+            {
+                var user = GetUserByEmail(email);
+                if (user == null)
+                    throw new Exception("User not found");
+
+                if (resetPasswordModel.NewPassword != resetPasswordModel.ConfirmPassword)
+                    throw new Exception("Password mismatch");
+
+                user.Password = Helper.EncodePassword(resetPasswordModel.NewPassword);
+                _dbContext.Users.Update(user);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error resetting password", ex);
+            }
+        }
+
     }
 }

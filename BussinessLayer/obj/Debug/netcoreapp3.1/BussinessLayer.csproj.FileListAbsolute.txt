@@ -13,3 +13,4 @@ C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreap
 C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\Bussines.E1038C4E.Up2Date
 C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.dll
 C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.pdb
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BussinessLayer\obj\Debug\netcoreapp3.1\BussinessLayer.sourcelink.json

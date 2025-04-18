@@ -77,3 +77,5 @@ C:\Users\acer\Desktop\BasicPrograms\BookStore\BookStore\obj\Debug\netcoreapp3.1\
 C:\Users\acer\Desktop\BasicPrograms\BookStore\BookStore\obj\Debug\netcoreapp3.1\BookStore.dll
 C:\Users\acer\Desktop\BasicPrograms\BookStore\BookStore\obj\Debug\netcoreapp3.1\BookStore.pdb
 C:\Users\acer\Desktop\BasicPrograms\BookStore\BookStore\obj\Debug\netcoreapp3.1\BookStore.genruntimeconfig.cache
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BookStore\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\acer\Desktop\BasicPrograms\BookStore\BookStore\obj\Debug\netcoreapp3.1\BookStore.sourcelink.json
