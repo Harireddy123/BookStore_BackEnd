@@ -20,5 +20,9 @@ namespace BussinessLayer.Service
         public string Login(AdminLoginModel model) => _adminRepository.Login(model);
 
         public bool EmailExists(string email) => _adminRepository.EmailExists(email);
+
+        public ForgotPasswordModel ForgetPassword(string email) => _adminRepository.ForgetPassword(email);
+
+        public bool ResetPassword(string email, ResetPasswordModel model) => _adminRepository.ResetPassword(email, model);
     }
 }

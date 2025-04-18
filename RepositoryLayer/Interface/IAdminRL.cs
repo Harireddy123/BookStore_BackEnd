@@ -11,5 +11,7 @@ namespace RepositoryLayer.Interface
         public Admin RegisterAdmin(AdminRegisterModel model);
         public string Login(AdminLoginModel model);
         public bool EmailExists(string email);
+        public ForgotPasswordModel ForgetPassword(string email);
+        public bool ResetPassword(string email, ResetPasswordModel resetPasswordModel);
     }
 }

@@ -94,5 +94,61 @@ namespace RepositoryLayer.Service
                 throw new Exception("Error generating JWT token", ex);
             }
         }
+
+
+        public ForgotPasswordModel ForgetPassword(string email)
+        {
+            try
+            {
+                var admin = GetAdminByEmail(email);
+                if (admin == null)
+                    throw new Exception("Admin does not exist for the requested email");
+
+                return new ForgotPasswordModel
+                {
+                    Id = admin.Id,
+                    Email = admin.Email,
+                    Token = GenerateToken(admin.Email, admin.Id, admin.Role)
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error processing forgot password request", ex);
+            }
+        }
+
+        public Admin GetAdminByEmail(string email)
+        {
+            try
+            {
+                return _dbContext.Admins.FirstOrDefault(admin => admin.Email == email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving admin by email", ex);
+            }
+        }
+
+        public bool ResetPassword(string email, ResetPasswordModel resetPasswordModel)
+        {
+            try
+            {
+                var admin = GetAdminByEmail(email);
+                if (admin == null)
+                    throw new Exception("Admin not found");
+
+                if (resetPasswordModel.NewPassword != resetPasswordModel.ConfirmPassword)
+                    throw new Exception("Password mismatch");
+
+                admin.Password = Helper.EncodePassword(resetPasswordModel.NewPassword);
+                _dbContext.Admins.Update(admin);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error resetting password", ex);
+            }
+        }
     }
 }

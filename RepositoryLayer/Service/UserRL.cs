@@ -105,7 +105,7 @@ namespace RepositoryLayer.Service
 
                 return new ForgotPasswordModel
                 {
-                    UserId = user.Id,
+                    Id = user.Id,
                     Email = user.Email,
                     Token = GenerateToken(user.Email, user.Id, user.Role)
                 };
