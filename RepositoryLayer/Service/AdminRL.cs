@@ -56,7 +56,6 @@ namespace RepositoryLayer.Service
                     LastName = model.LastName,
                     Email = model.Email,
                     Password = Helper.EncodePassword(model.Password),
-                    Role = model.Role
                 };
 
                 _dbContext.Add(admin);

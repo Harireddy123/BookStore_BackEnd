@@ -18,13 +18,15 @@ namespace BussinessLayer.Service
 
         public User Registeration(RegisterModel model) => _userRepository.RegisterUser(model);
 
-        public string Login(LoginModel model) => _userRepository.Login(model);
+        public LoginResponseModel Login(LoginModel model) => _userRepository.Login(model);
 
         public bool EmailExists(string email) => _userRepository.EmailExists(email);
 
         public ForgotPasswordModel ForgetPassword(string email) => _userRepository.ForgetPassword(email);
 
         public bool ResetPassword(string email, ResetPasswordModel model) => _userRepository.ResetPassword(email, model);
+        public LoginResponseModel RefreshToken(string refreshToken) => _userRepository.RefreshToken(refreshToken);
+
 
     }
 }

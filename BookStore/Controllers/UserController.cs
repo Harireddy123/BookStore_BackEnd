@@ -67,7 +67,7 @@ namespace BookStore.Controllers
 
                 if (result != null)
                 {
-                    return Ok(new ResponseModel<string>
+                    return Ok(new ResponseModel<LoginResponseModel>
                     { Success = true, Message = "Login successful", Data = result });
                 }
 
@@ -141,5 +141,27 @@ namespace BookStore.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred while resetting the password. Please try again later.", Data = ex.Message });
             }
         }
+        [HttpPost("refresh")]
+        public IActionResult RefreshToken([FromBody] RefreshTokenModel model)
+        {
+            var result = _userManager.RefreshToken(model.RefreshToken);
+
+            if (result == null)
+            {
+                return Unauthorized(new ResponseModel<string>
+                {
+                    Success = false,
+                    Message = "Invalid or expired refresh token"
+                });
+            }
+
+            return Ok(new ResponseModel<LoginResponseModel>
+            {
+                Success = true,
+                Message = "Token refreshed successfully",
+                Data = result
+            });
+        }
+
     }
 }

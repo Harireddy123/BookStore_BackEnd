@@ -39,7 +39,6 @@ namespace RepositoryLayer.Service
                     LastName = model.LastName,
                     Email = model.Email,
                     Password = Helper.EncodePassword(model.Password),
-                    Role = model.Role,
                 };
 
                 _dbContext.Add(user);
@@ -53,16 +52,19 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public string Login(LoginModel model)
+        public LoginResponseModel Login(LoginModel model)
         {
             try
             {
                 var user = _dbContext.Users.FirstOrDefault(u => u.Email == model.Email);
-                if (user == null)
+                if (user == null || Helper.Decode(user.Password) != model.Password)
                     return null;
 
-                string decodedPassword =Helper.Decode(user.Password);
-                return decodedPassword == model.Password ? GenerateToken(user.Email, user.Id, user.Role) : null;
+                return new LoginResponseModel
+                {
+                    AccessToken = GenerateToken(user.Email, user.Id, user.Role),
+                    RefreshToken = GenerateRefreshToken(user.Email, user.Id, user.Role)
+                };
             }
             catch (Exception ex)
             {
@@ -94,6 +96,30 @@ namespace RepositoryLayer.Service
                 throw new Exception("Error generating JWT token", ex);
             }
         }
+
+        private string GenerateRefreshToken(string Email, int userId, string Role)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:RefreshKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+        new Claim("custom_email", Email),
+        new Claim("id", userId.ToString()),
+        new Claim("custom_role", Role),
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(7), // refresh token valid for 7 days
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
 
         public ForgotPasswordModel ForgetPassword(string email)
         {
@@ -147,6 +173,40 @@ namespace RepositoryLayer.Service
             catch (Exception ex)
             {
                 throw new Exception("Error resetting password", ex);
+            }
+        }
+        public LoginResponseModel RefreshToken(string refreshToken)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_configuration["Jwt:RefreshKey"]);
+
+                tokenHandler.ValidateToken(refreshToken, new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = _configuration["Jwt:Issuer"],
+                    ValidAudience = _configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var email = jwtToken.Claims.First(x => x.Type == "custom_email").Value;
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var role = jwtToken.Claims.First(x => x.Type == "custom_role").Value;
+
+                return new LoginResponseModel
+                {
+                    AccessToken = GenerateToken(email, userId, role),
+                    RefreshToken = GenerateRefreshToken(email, userId, role)
+                };
+            }
+            catch
+            {
+                return null;
             }
         }
 

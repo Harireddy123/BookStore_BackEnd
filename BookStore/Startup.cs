@@ -35,6 +35,24 @@ namespace BookStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(e => e.Value.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
+
+                    return new BadRequestObjectResult(new
+                    {
+                        Message = "Validation Failed",
+                        Errors = errors
+                    });
+                };
+            });
             services.AddDbContext<BookContext>(a => a.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddSwaggerGen(c =>
             {
