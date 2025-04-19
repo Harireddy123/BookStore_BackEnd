@@ -30,7 +30,6 @@ namespace ModelLayer.Models
             ErrorMessage = "Password must contain at least one uppercase letter, one number, and one special character")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage ="Role is required")]
-        public string Role { get; set; }
+       
     }
 }
