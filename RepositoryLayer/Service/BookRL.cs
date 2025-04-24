@@ -1,251 +1,234 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using ModelLayer.Models;
+using RepositoryLayer.Context;
+using RepositoryLayer.Entity;
+using RepositoryLayer.Interface;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using ModelLayer.Models;
-using RepositoryLayer.Interface;
 
 namespace RepositoryLayer.Service
 {
     public class BookRL : IBookRL
     {
-        private readonly string _connectionString;
+        private readonly BookContext _context;
 
-        public BookRL(IConfiguration configuration)
+        public BookRL(BookContext context)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _context = context;
         }
 
         public void LoadBooksFromCsv(string filePath)
         {
-            var lines = File.ReadAllLines(filePath).Skip(1);
-
-            using var connection = new SqlConnection(_connectionString);
-            connection.Open();
+            var lines = File.ReadAllLines(filePath).Skip(1); // Skip header row
 
             foreach (var line in lines)
             {
-                var values = line.Split(',');
+                var values = line.Split(',').Select(v => v.Trim()).ToArray();
 
                 if (values.Length < 11)
                 {
-                    Console.WriteLine($"Skipping line due to insufficient columns: {line}");
+                    Console.WriteLine($"Skipped line (less than 11 fields): {line}");
                     continue;
                 }
 
                 if (!decimal.TryParse(values[4], out decimal price))
                 {
-                    Console.WriteLine($"Invalid price in line: {line}");
+                    Console.WriteLine($"Invalid price format: {values[4]}");
                     continue;
                 }
+
                 if (!decimal.TryParse(values[5], out decimal discountPrice))
                 {
-                    Console.WriteLine($"Invalid discount price in line: {line}");
+                    Console.WriteLine($"Invalid discount price format: {values[5]}");
                     continue;
                 }
+
                 if (!int.TryParse(values[6], out int quantity))
                 {
-                    Console.WriteLine($"Invalid quantity in line: {line}");
+                    Console.WriteLine($"Invalid quantity format: {values[6]}");
                     continue;
                 }
+
+                string adminUserId = values[8]; // Assign AdminUserId directly from CSV
+
                 if (!DateTime.TryParse(values[9], out DateTime createdAt))
                 {
-                    Console.WriteLine($"Invalid createdAt in line: {line}");
+                    Console.WriteLine($"Invalid CreatedAt format: {values[9]}");
                     continue;
                 }
+
                 if (!DateTime.TryParse(values[10], out DateTime updatedAt))
                 {
-                    Console.WriteLine($"Invalid updatedAt in line: {line}");
+                    Console.WriteLine($"Invalid UpdatedAt format: {values[10]}");
                     continue;
                 }
 
-                var command = new SqlCommand(
-                    "INSERT INTO Books (BookName, Author, Description, Price, DiscountPrice, Quantity, BookImage, CreatedAt, UpdatedAt) " +
-                    "VALUES (@BookName, @Author, @Description, @Price, @DiscountPrice, @Quantity, @BookImage, @CreatedAt, @UpdatedAt)", connection);
+                var book = new Book
+                {
+                    BookName = values[1],
+                    Author = values[2],
+                    Description = values[3],
+                    Price = price,
+                    DiscountPrice = discountPrice,
+                    Quantity = quantity,
+                    BookImage = values[7],
+                    AdminUserId = adminUserId,
+                    CreatedAt = createdAt,
+                    UpdatedAt = updatedAt
+                };
 
-                command.Parameters.AddWithValue("@BookName", values[1].Trim());
-                command.Parameters.AddWithValue("@Author", values[2].Trim());
-                command.Parameters.AddWithValue("@Description", values[3].Trim());
-                command.Parameters.AddWithValue("@Price", price);
-                command.Parameters.AddWithValue("@DiscountPrice", discountPrice);
-                command.Parameters.AddWithValue("@Quantity", quantity);
-                command.Parameters.AddWithValue("@BookImage", values[7].Trim());
-                command.Parameters.AddWithValue("@CreatedAt", createdAt);
-                command.Parameters.AddWithValue("@UpdatedAt", updatedAt);
-
-                command.ExecuteNonQuery();
+                _context.Books.Add(book);
             }
+
+            _context.SaveChanges();
+            Console.WriteLine("CSV data loaded successfully.");
         }
+
 
 
         public List<BookModel> GetAllBooks(int pageNumber, int pageSize)
         {
-            var books = new List<BookModel>();
-
-            using var connection = new SqlConnection(_connectionString);
-
-            // Calculate how many rows to skip
-            int offset = (pageNumber - 1) * pageSize;
-
-            var command = new SqlCommand(@"
-        SELECT * FROM Books
-        ORDER BY Id
-        OFFSET @Offset ROWS
-        FETCH NEXT @PageSize ROWS ONLY", connection);
-
-            command.Parameters.AddWithValue("@Offset", offset);
-            command.Parameters.AddWithValue("@PageSize", pageSize);
-
-            connection.Open();
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                books.Add(new BookModel
-                {
-                    Id = (int)reader["Id"],
-                    BookName = reader["BookName"].ToString(),
-                    Author = reader["Author"].ToString(),
-                    Description = reader["Description"].ToString(),
-                    Price = (decimal)reader["Price"],
-                    DiscountPrice = (decimal)reader["DiscountPrice"],
-                    Quantity = (int)reader["Quantity"],
-                    BookImage = reader["BookImage"].ToString(),
-                    CreatedAt = (DateTime)reader["CreatedAt"],
-                    UpdatedAt = (DateTime)reader["UpdatedAt"]
-                });
-            }
-
-            return books;
+            return _context.Books
+                .OrderBy(b => b.BookName)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsEnumerable() // Switches from IQueryable to IEnumerable (in-memory)
+                .Select(b => BookRL.MapToModel(b)) // Call static method
+                .ToList();
         }
-
 
         public BookModel GetBookById(int id)
         {
-            using var connection = new SqlConnection(_connectionString);
-            var command = new SqlCommand("SELECT * FROM Books WHERE Id = @Id", connection);
-            command.Parameters.AddWithValue("@Id", id);
-            connection.Open();
-            var reader = command.ExecuteReader();
-
-            if (reader.Read())
-            {
-                return new BookModel
-                {
-                    Id = (int)reader["Id"],
-                    BookName = reader["BookName"].ToString(),
-                    Author = reader["Author"].ToString(),
-                    Description = reader["Description"].ToString(),
-                    Price = (decimal)reader["Price"],
-                    DiscountPrice = (decimal)reader["DiscountPrice"],
-                    Quantity = (int)reader["Quantity"],
-                    BookImage = reader["BookImage"].ToString(),
-                    CreatedAt = (DateTime)reader["CreatedAt"],
-                    UpdatedAt = (DateTime)reader["UpdatedAt"]
-                };
-            }
-
-            return null;
+            var book = _context.Books.FirstOrDefault(b => b.Id == id);
+            return book != null ? MapToModel(book) : null;
         }
 
-        public bool UpdateBook(BookModel book)
+        public bool UpdateBook(int id, BookModel model)
         {
-            using var connection = new SqlConnection(_connectionString);
-            var command = new SqlCommand("UPDATE Books SET BookName=@BookName, Author=@Author, Description=@Description, Price=@Price, DiscountPrice=@DiscountPrice, Quantity=@Quantity, BookImage=@BookImage, CreatedAt=@CreatedAt, UpdatedAt=@UpdatedAt WHERE Id=@Id", connection);
+            var book = _context.Books.FirstOrDefault(b => b.Id == id);
+            if (book == null) return false;
 
-            command.Parameters.AddWithValue("@BookName", book.BookName);
-            command.Parameters.AddWithValue("@Author", book.Author);
-            command.Parameters.AddWithValue("@Description", book.Description);
-            command.Parameters.AddWithValue("@Price", book.Price);
-            command.Parameters.AddWithValue("@DiscountPrice", book.DiscountPrice);
-            command.Parameters.AddWithValue("@Quantity", book.Quantity);
-            command.Parameters.AddWithValue("@BookImage", book.BookImage);
-            command.Parameters.AddWithValue("@CreatedAt", book.CreatedAt);
-            command.Parameters.AddWithValue("@UpdatedAt", book.UpdatedAt);
-            command.Parameters.AddWithValue("@Id", book.Id);
+            book.BookName = model.BookName;
+            book.Author = model.Author;
+            book.Description = model.Description;
+            book.Price = model.Price;
+            book.DiscountPrice = model.DiscountPrice;
+            book.Quantity = model.Quantity;
+            book.BookImage = model.BookImage;
+            book.UpdatedAt = DateTime.Now;
 
-            connection.Open();
-            return command.ExecuteNonQuery() > 0;
+            _context.SaveChanges();
+            return true;
         }
 
         public bool DeleteBook(int id)
         {
-            using var connection = new SqlConnection(_connectionString);
-            var command = new SqlCommand("DELETE FROM Books WHERE Id=@Id", connection);
-            command.Parameters.AddWithValue("@Id", id);
-            connection.Open();
-            return command.ExecuteNonQuery() > 0;
+            var book = _context.Books.FirstOrDefault(b => b.Id == id);
+            if (book == null) return false;
+
+            _context.Books.Remove(book);
+            _context.SaveChanges();
+            return true;
         }
 
         public List<BookModel> SearchBooks(string query)
         {
-            var books = new List<BookModel>();
-            using var connection = new SqlConnection(_connectionString);
-            var command = new SqlCommand("SELECT * FROM Books WHERE BookName LIKE @Query OR Author LIKE @Query", connection);
-            command.Parameters.AddWithValue("@Query", $"%{query}%");
-            connection.Open();
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
+            try
             {
-                books.Add(ReadBook(reader));
-            }
+                Console.WriteLine($"Search Query: '{query}'");
 
-            return books;
+                if (string.IsNullOrWhiteSpace(query))
+                    return new List<BookModel>();
+
+                var books = _context.Books
+                    .Where(b => b.Author != null && b.Author.ToLower().Contains(query.ToLower()))
+                    .ToList();
+
+                Console.WriteLine($"Matched Books Count: {books.Count}");
+
+                return books.Select(b => MapToModel(b)).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SearchBooks: {ex.ToString()}");
+                return new List<BookModel>();
+            }
         }
 
         public List<BookModel> SortByPrice(string order)
         {
-            var books = new List<BookModel>();
-            using var connection = new SqlConnection(_connectionString);
-
-            string sortOrder = order.ToLower() == "desc" ? "DESC" : "ASC";
-            var command = new SqlCommand($"SELECT * FROM Books ORDER BY Price {sortOrder}", connection);
-            connection.Open();
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
+            try
             {
-                books.Add(ReadBook(reader));
-            }
+                var sortedBooks = order.ToLower() == "desc"
+                    ? _context.Books.OrderByDescending(b => b.Price)
+                    : _context.Books.OrderBy(b => b.Price);
 
-            return books;
+                return sortedBooks.Select(b => MapToModel(b)).ToList();
+            }
+            catch (Exception ex)
+            {
+                // Log the error
+                Console.WriteLine($"Error in SortByPrice: {ex.Message}");
+                return new List<BookModel>();
+            }
         }
 
         public List<BookModel> GetNewArrivals()
         {
-            var books = new List<BookModel>();
-            using var connection = new SqlConnection(_connectionString);
-            var command = new SqlCommand("SELECT * FROM Books WHERE CreatedAt >= @RecentDate", connection);
-            command.Parameters.AddWithValue("@RecentDate", DateTime.Now.AddDays(-30)); // last 30 days
-            connection.Open();
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
+            try
             {
-                books.Add(ReadBook(reader));
+                var dateThreshold = DateTime.Now.AddDays(-30);
+                return _context.Books
+                    .Where(b => b.CreatedAt >= dateThreshold)
+                    .Select(b => MapToModel(b))
+                    .ToList();
             }
-
-            return books;
+            catch (Exception ex)
+            {
+                // Log the error
+                Console.WriteLine($"Error in GetNewArrivals: {ex.Message}");
+                return new List<BookModel>();
+            }
         }
 
-        private BookModel ReadBook(SqlDataReader reader)
+
+        public bool AddBook(BookModel model)
+        {
+            var book = new Book
+            {
+                BookName = model.BookName,
+                Author = model.Author,
+                Description = model.Description,
+                Price = model.Price,
+                DiscountPrice = model.DiscountPrice,
+                Quantity = model.Quantity,
+                BookImage = model.BookImage,
+                AdminUserId = model.AdminUserId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            _context.Books.Add(book);
+            return _context.SaveChanges() > 0;
+        }
+
+        public static BookModel MapToModel(Book book)
         {
             return new BookModel
             {
-                Id = (int)reader["Id"],
-                BookName = reader["BookName"].ToString(),
-                Author = reader["Author"].ToString(),
-                Description = reader["Description"].ToString(),
-                Price = (decimal)reader["Price"],
-                DiscountPrice = (decimal)reader["DiscountPrice"],
-                Quantity = (int)reader["Quantity"],
-                BookImage = reader["BookImage"].ToString(),
-                CreatedAt = (DateTime)reader["CreatedAt"],
-                UpdatedAt = (DateTime)reader["UpdatedAt"]
+                BookName = book.BookName,
+                Author = book.Author,
+                Description = book.Description,
+                Price = book.Price,
+                DiscountPrice = book.DiscountPrice,
+                Quantity = book.Quantity,
+                BookImage = book.BookImage,
+                AdminUserId = book.AdminUserId,
+                CreatedAt = book.CreatedAt,
+                UpdatedAt = book.UpdatedAt
             };
         }
 

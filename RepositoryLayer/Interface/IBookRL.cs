@@ -10,7 +10,8 @@ namespace RepositoryLayer.Interface
         void LoadBooksFromCsv(string filePath);
         List<BookModel> GetAllBooks(int pageNumber, int pageSize);
         BookModel GetBookById(int id);
-        bool UpdateBook(BookModel book);
+        bool AddBook(BookModel book);
+        bool UpdateBook(int id, BookModel book);
         bool DeleteBook(int id);
         List<BookModel> SearchBooks(string query);
         List<BookModel> SortByPrice(string order);

@@ -7,12 +7,12 @@ namespace BussinessLayer.Interface
 {
     public interface IBookBL
     {
-        public void LoadBooks(string filePath);
-        public List<BookModel> GetAll(int pageNumber, int pageSize);
-        public BookModel GetById(int id);
-        public bool Update(BookModel book);
-        public bool Delete(int id);
-
+        void LoadBooks(string filePath);
+        List<BookModel> GetAll(int pageNumber, int pageSize);
+        BookModel GetById(int id);
+        bool AddBook(BookModel book);
+        bool Update(int id, BookModel book);
+        bool Delete(int id);
         List<BookModel> SearchBooks(string query);
         List<BookModel> SortByPrice(string order);
         List<BookModel> GetNewArrivals();

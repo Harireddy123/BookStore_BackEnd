@@ -22,7 +22,9 @@ namespace BussinessLayer.Service
 
         public BookModel GetById(int id) => _repository.GetBookById(id);
 
-        public bool Update(BookModel book) => _repository.UpdateBook(book);
+        public bool AddBook(BookModel book) => _repository.AddBook(book);
+
+        public bool Update(int id, BookModel book) => _repository.UpdateBook(id, book);
 
         public bool Delete(int id) => _repository.DeleteBook(id);
 
