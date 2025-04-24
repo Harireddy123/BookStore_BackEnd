@@ -25,32 +25,48 @@ namespace BookStore.Controllers
             var role = User.FindFirst("custom_role")?.Value;
 
             if (role != "Admin")
-                return Forbid("Only admins can load data from CSV.");
+                return Unauthorized(new ResponseModel<string> { Success = false, Message = "Only admins can load data from CSV." });
 
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "CSV", "books.csv");
 
             if (!System.IO.File.Exists(filePath))
             {
-                return NotFound("CSV file not found at: " + filePath);
+                return NotFound(new ResponseModel<string> { Success = false, Message = $"CSV file not found at: {filePath}" });
             }
 
             _bookBusiness.LoadBooks(filePath);
-            return Ok("CSV Data Loaded to DB");
+            return Ok(new ResponseModel<string> { Success = true, Message = "CSV Data Loaded to DB" });
         }
+
+        [Authorize]
+        [HttpPost("add")]
+        public IActionResult AddBook(BookModel book)
+        {
+            var role = User.FindFirst("custom_role")?.Value;
+            if (role != "Admin")
+                return Unauthorized(new ResponseModel<string> { Success = false, Message = "Only Admins can update books" });
+
+            var result = _bookBusiness.AddBook(book);
+            if (result)
+                return Ok(new ResponseModel<string> { Success = true, Message = "Book added successfully"});
+            else
+                return BadRequest(new ResponseModel<string> { Success = false, Message = "failed to add book" });
+        }
+
 
 
         [Authorize]
         [HttpPut("update")]
-        public IActionResult Update(BookModel book)
+        public IActionResult Update(int id, BookModel book)
         {
             var role = User.FindFirst("custom_role")?.Value;
             if (role != "Admin")
-                return Unauthorized("Only Admins can update books");
+                return Unauthorized(new ResponseModel<string> { Success = false, Message = "Only Admins can update books" });
 
-            if (_bookBusiness.Update(book))
-                return Ok("Updated");
+            if (_bookBusiness.Update(id, book))
+                return Ok(new ResponseModel<string> { Success = true, Message = "Book updated successfully" });
             else
-                return NotFound();
+                return NotFound(new ResponseModel<string> { Success = false, Message = "Book not found" });
         }
 
         [Authorize]
@@ -59,12 +75,12 @@ namespace BookStore.Controllers
         {
             var role = User.FindFirst("custom_role")?.Value;
             if (role != "Admin")
-                return Unauthorized("Only Admins can delete books");
+                return Unauthorized(new ResponseModel<string> { Success = false, Message = "Only Admins can delete books" });
 
             if (_bookBusiness.Delete(id))
-                return Ok("Deleted");
+                return Ok(new ResponseModel<string> { Success = true, Message = "Book deleted successfully" });
             else
-                return NotFound();
+                return NotFound(new ResponseModel<string> { Success = false, Message = "Book not found" });
         }
 
         [Authorize]
@@ -74,9 +90,9 @@ namespace BookStore.Controllers
             var books = _bookBusiness.GetAll(pageNumber, pageSize);
 
             if (books != null && books.Any())
-                return Ok(books);
+                return Ok(new ResponseModel<object> { Success = true, Message = "Books retrieved successfully", Data = books });
             else
-                return NotFound("No books found.");
+                return NotFound(new ResponseModel<string> { Success = false, Message = "No books found" });
         }
 
         [Authorize]
@@ -86,29 +102,33 @@ namespace BookStore.Controllers
             var book = _bookBusiness.GetById(id);
 
             if (book == null)
-            {
-                return NotFound();
-            }
+                return NotFound(new ResponseModel<string> { Success = false, Message = "Book not found" });
 
-            return Ok(book);
+            return Ok(new ResponseModel<object> { Success = true, Message = "Book retrieved successfully", Data = book });
         }
-
-
 
         [Authorize]
         [HttpGet("search")]
         public IActionResult Search([FromQuery] string query)
-            => Ok(_bookBusiness.SearchBooks(query));
+        {
+            var result = _bookBusiness.SearchBooks(query);
+            return Ok(new ResponseModel<object> { Success = true, Message = "Search completed", Data = result });
+        }
 
         [Authorize]
         [HttpGet("sort-by-price")]
         public IActionResult SortByPrice([FromQuery] string order = "asc")
-            => Ok(_bookBusiness.SortByPrice(order));
+        {
+            var result = _bookBusiness.SortByPrice(order);
+            return Ok(new ResponseModel<object> { Success = true, Message = $"Books sorted by price ({order})", Data = result });
+        }
 
         [Authorize]
         [HttpGet("new-arrivals")]
         public IActionResult GetNewArrivals()
-            => Ok(_bookBusiness.GetNewArrivals());
-
+        {
+            var result = _bookBusiness.GetNewArrivals();
+            return Ok(new ResponseModel<object> { Success = true, Message = "New arrivals retrieved", Data = result });
+        }
     }
 }
