@@ -53,7 +53,11 @@ namespace BookStore
                     });
                 };
             });
-            services.AddDbContext<BookContext>(a => a.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddDbContext<BookContext>(a =>
+                a.UseSqlServer(
+                    Configuration["ConnectionStrings:DefaultConnection"],
+                    sqlServerOptions => sqlServerOptions.CommandTimeout(120) // 120 seconds
+                ));
             services.AddSwaggerGen(c =>
             {
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -85,6 +89,9 @@ namespace BookStore
             services.AddTransient<IAdminBL, AdminBL>();
             services.AddTransient<IBookRL, BookRL>();
             services.AddTransient<IBookBL, BookBL>();
+            services.AddTransient<ICartRL, CartRL>();
+            services.AddTransient<ICartBL, CartBL>();
+
 
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

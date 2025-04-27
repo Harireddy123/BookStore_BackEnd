@@ -1,4 +1,5 @@
-﻿using BussinessLayer.Interface;
+﻿using System.Linq;
+using BussinessLayer.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ModelLayer.Models;
@@ -52,8 +53,23 @@ namespace BookStore.Controllers
             if (items == null || items.Count == 0)
                 return NotFound(new ResponseModel<string> { Success = false, Message = "No items in cart." });
 
-            return Ok(new ResponseModel<object> { Success = true, Message = "Cart items retrieved", Data = items });
+            // 👉 Calculate total price here
+            var totalPrice = items.Sum(c => c.Price);
+
+            var response = new
+            {
+                CartItems = items,
+                TotalPrice = totalPrice
+            };
+
+            return Ok(new ResponseModel<object>
+            {
+                Success = true,
+                Message = "Cart items retrieved",
+                Data = response
+            });
         }
+
 
         [Authorize]
         [HttpPut("update")]
@@ -92,6 +108,7 @@ namespace BookStore.Controllers
 
             return Ok(new ResponseModel<string> { Success = true, Message = "Cart item removed successfully" });
         }
+
 
     }
 }

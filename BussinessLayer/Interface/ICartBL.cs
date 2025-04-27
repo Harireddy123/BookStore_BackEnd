@@ -12,6 +12,8 @@ namespace BussinessLayer.Interface
         List<Cart> GetCartItems(int userId);
         bool RemoveFromCart(int cartId, int userId);
         Cart UpdateCartItem(int cartId, CartModel model, int userId);
+
+        decimal GetCartTotal(int userId);
     }
 
 }

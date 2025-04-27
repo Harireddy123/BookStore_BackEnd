@@ -25,6 +25,11 @@ namespace BussinessLayer.Service
 
         public Cart UpdateCartItem(int cartId, CartModel model, int userId) =>
             _cartRL.UpdateCartItem(cartId, model, userId);
+
+        public decimal GetCartTotal(int userId)
+        {
+            return _cartRL.GetCartTotal(userId);
+        }
     }
 
 }

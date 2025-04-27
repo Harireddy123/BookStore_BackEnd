@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace RepositoryLayer.Entity
 {
@@ -24,6 +25,7 @@ namespace RepositoryLayer.Entity
         public bool IsPurchased { get; set; } = false;
 
         public virtual Book Book { get; set; }
+        [JsonIgnore]
         public virtual User User { get; set; }
     }
 
