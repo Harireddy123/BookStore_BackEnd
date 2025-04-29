@@ -18,6 +18,7 @@ namespace RepositoryLayer.Context
 
         public DbSet<Cart> Carts { get; set; }
         public DbSet<WishList> Wishlists { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

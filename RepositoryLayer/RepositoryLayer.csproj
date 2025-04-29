@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20250425072552_Ignore.cs" />
     <Compile Remove="Migrations\20250425072552_Ignore.Designer.cs" />
+    <Compile Remove="Migrations\20250429021952_order.cs" />
+    <Compile Remove="Migrations\20250429021952_order.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
